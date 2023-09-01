@@ -35,17 +35,29 @@ export default function SignInSide() {
         const data = isJson && await response.json();
         console.log(data)
         if (data?.status == 200) {
-          console.log("pasa mostro")
+          
+          if(data.message == "Medic"){
+            localStorage.setItem('medic', JSON.stringify(data.medic))
+            window.location.href = `/MedicPanel`
+          }
+          if(data.message == "User"){
+            localStorage.setItem('user', JSON.stringify(data.user))
+            window.location.href = `/UserPanel`
+          }
         }
-        if (data == 500) {
+        if (data.status == 500) {
           var alert500 = document.getElementById('alert500')
           alert500.style.display = '';
         }
-        if (data == 401) {
+        if (data.status == 401) {
           var alert = document.getElementById('alert')
           alert.style.display = '';
         }
       })
+      .catch(function (error) {
+        var alert500 = document.getElementById('alert500')
+        alert500.style.display = '';
+    })
   };
 
   return (
@@ -76,14 +88,14 @@ export default function SignInSide() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: '#53b375' }}>
+            <Avatar sx={{ m: 1, bgcolor: '#59BAA9' }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Iniciar sesión
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              <Grid xs={12}>
+              <Grid item xs={12}>
               <TextField
                 margin="normal"
                 required
@@ -95,7 +107,7 @@ export default function SignInSide() {
                 autoFocus
               />
               </Grid>
-              <Grid xs={12}>
+              <Grid item xs={12}>
               <TextField
                 margin="normal"
                 required
@@ -123,13 +135,13 @@ export default function SignInSide() {
               <Alert severity="error" id='alert500' style={{ display: 'none' }}>Hubo un error en el servidor</Alert>
               <Grid container>
                 <Grid item xs>                  
-                  <Link href="#" variant="body2">
+                  <Link href="/NewUser" variant="body2">
                     Recuperar contraseña
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link variant="body2">
-                    {"¿No tiene una cuenta? Registrese"}
+                  <Link href="/NewUser" variant="body2">
+                    No tiene una cuenta? Registrese"
                   </Link>
                 </Grid>
               </Grid>

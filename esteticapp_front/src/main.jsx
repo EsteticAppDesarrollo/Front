@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import Login from './Login/Login.jsx'
 import NewUser from './NewUser/NewUser'
 import NewMedic from './NewMedic/NewMedic'
+import UserPanel from './UserPanel/UserPanel'
+import MedicPanel from './MedicPanel/MedicPanel'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 window.conexion = "https://localhost:44348/api";
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
   {
     path:"/NewMedic",
     element: <NewMedic />
+  },
+  {
+    path:"/UserPanel",
+    element: <UserPanel />
+  },
+  {
+    path:"/MedicPanel",
+    element: <MedicPanel />
   }
 ])
 
