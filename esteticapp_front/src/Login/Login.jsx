@@ -13,8 +13,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Modal from '@mui/material/Modal';
 
 const defaultTheme = createTheme();
+
+
 
 export default function SignInSide() {
   const handleSubmit = (event) => {
@@ -35,12 +38,12 @@ export default function SignInSide() {
         const data = isJson && await response.json();
         console.log(data)
         if (data?.status == 200) {
-          
-          if(data.message == "Medic"){
+
+          if (data.message == "Medic") {
             localStorage.setItem('medic', JSON.stringify(data.medic))
             window.location.href = `/MedicPanel`
           }
-          if(data.message == "User"){
+          if (data.message == "User") {
             localStorage.setItem('user', JSON.stringify(data.user))
             window.location.href = `/UserPanel`
           }
@@ -57,7 +60,28 @@ export default function SignInSide() {
       .catch(function (error) {
         var alert500 = document.getElementById('alert500')
         alert500.style.display = '';
-    })
+      })
+  };
+
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+    const handleClose = () => {
+      setOpen(false);
+    };
+  
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
   };
 
   return (
@@ -96,28 +120,28 @@ export default function SignInSide() {
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <Grid item xs={12}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                />
               </Grid>
               <Grid item xs={12}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
               </Grid>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -134,15 +158,29 @@ export default function SignInSide() {
               <Alert severity="error" id='alert' style={{ display: 'none' }}>Usuario y/o Contraseña incorrectos</Alert>
               <Alert severity="error" id='alert500' style={{ display: 'none' }}>Hubo un error en el servidor</Alert>
               <Grid container>
-                <Grid item xs>                  
+                <Grid item xs>
                   <Link href="/NewUser" variant="body2">
                     Recuperar contraseña
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/NewUser" variant="body2">
+                  <Link onClick={handleOpen} variant="body2">
                     No tiene una cuenta? Registrese"
                   </Link>
+
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="parent-modal-title"
+                    aria-describedby="parent-modal-description"
+                  >
+                    <Box sx={{ ...style, width: 400 }}>
+                      <h2 id="parent-modal-title">¿Cuenta de que queres crear perreque malvado ?</h2>
+                      <Button variant="contained" href="/NewMedic" sx={{mr:12}}>Medico</Button>
+                      <Button variant="contained" href="/NewUser">Paciente</Button>
+                    </Box>
+                  </Modal>
+
                 </Grid>
               </Grid>
             </Box>

@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
+import MapsAutocomplete from '../Helpers/MapsAutocomplete'
 
 export default function SignUpMedic() {
     const [date, setDate] = useState('');
@@ -25,16 +26,12 @@ export default function SignUpMedic() {
             tuition: data.get('tuition'),
             whatsapp: data.get('whatsapp'),
             instagram: data.get('instagram'),
-            adress: data.get('adress'),
-            country: data.get('country'),
-            province: data.get('province'),
-            city: data.get('email'),
+            adress: document.getElementById('google-map-demo').value,
             emailAddress: data.get('email'),
             password: data.get('password'),
             emailAddress: data.get('email'),
             startDate: new Date(date),
         };
-        console.log(Medic)
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -44,9 +41,10 @@ export default function SignUpMedic() {
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();
-
+                
                 if (data?.status == 200 && data?.message == "Exitoso") {
-                    console.log("pasa mostro")
+                    localStorage.setItem('medic', JSON.stringify(data.medic))
+                    window.location.href = `/MedicPanel`
                 }
                 if (data?.status == 200 && data?.message == "el email ya esta registrado") {
                     var alertEmailDupicate = document.getElementById('alertEmailDupicate')
@@ -69,9 +67,9 @@ export default function SignUpMedic() {
                     t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                height:'100vh'
+                height: '100vh'
             }}>
-                <Container component="main" maxWidth='s' sx={{width:'110vh'}}>
+                <Container component="main" maxWidth='s' sx={{ width: '110vh' }}>
                     <Box
                         sx={{
                             display: 'flex',
@@ -86,6 +84,7 @@ export default function SignUpMedic() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        fullWidth
                                         autoComplete="given-name"
                                         name="name"
                                         required
@@ -97,6 +96,7 @@ export default function SignUpMedic() {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        fullWidth
                                         required
                                         id="lastName"
                                         label="Apellido"
@@ -106,6 +106,7 @@ export default function SignUpMedic() {
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
                                     <TextField
+                                        fullWidth
                                         required
                                         id="tuition"
                                         label="Matricula"
@@ -134,45 +135,9 @@ export default function SignUpMedic() {
                                         autoComplete="family-name"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="adress"
-                                        label="Dirección"
-                                        name="adress"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="country"
-                                        label="País"
-                                        name="country"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="province"
-                                        label="Provincia"
-                                        name="province"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="city"
-                                        label="Ciudad"
-                                        name="city"
-                                        autoComplete="family-name"
-                                    />
+
+                                <Grid item xs={12} sm={12}>
+                                    <MapsAutocomplete />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>

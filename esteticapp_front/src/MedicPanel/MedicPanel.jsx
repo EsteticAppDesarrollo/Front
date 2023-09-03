@@ -29,23 +29,20 @@ export default function SignUpUser() {
     const [paymentMethod, setPaymentMethod] = useState([]);
     const [paymentMethodApi, setPaymentMethodApi] = useState([]);
 
-    const[name,setName] = useState('');
-    const[lastName,selastName] = useState('');
-    const[tuition,setTuition] = useState('');
-    const[whatsapp,setWhatsapp] = useState('');
-    const[instagram,setInstagram] = useState('');
-    const[email,setEmail] = useState('');
-    const[medicalOfficeDescription,setMedicalOfficeDescription] = useState('');
-    const[DescriptionOfTheMedicalDirective,setDescriptionOfTheMedicalDirective] = useState('');
-    const[MedicalOfficeName,setMedicalOfficeName] = useState('');
-
-
+    const [name, setName] = useState('');
+    const [lastName, selastName] = useState('');
+    const [tuition, setTuition] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [instagram, setInstagram] = useState('');
+    const [email, setEmail] = useState('');
+    const [medicalOfficeDescription, setMedicalOfficeDescription] = useState('');
+    const [DescriptionOfTheMedicalDirective, setDescriptionOfTheMedicalDirective] = useState('');
+    const [MedicalOfficeName, setMedicalOfficeName] = useState('');
     const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
     const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
     useEffect(() => {
         var medic = JSON.parse(localStorage.getItem("medic"));
-        console.log(medic)
         setName(medic.name);
         selastName(medic.lastName);
         setTuition(medic.tuition);
@@ -54,7 +51,8 @@ export default function SignUpUser() {
         setEmail(medic.emailAddress);
         setMedicalOfficeDescription(medic.officeDescription);
         setDescriptionOfTheMedicalDirective(medic.descriptionOfSpecialities);
-        setMedicalOfficeName();
+        setMedicalOfficeName(medic.medicalOfficeName);
+        setDate(new Date(medic.startDate))
     }, [])
 
     useEffect(() => {
@@ -260,7 +258,6 @@ export default function SignUpUser() {
                                                 onChange={(date) => {
                                                     const d = new Date(date).toLocaleDateString('fr-FR');
                                                     setDate(d);
-                                                    console.log(d)
                                                 }}
                                             />
                                         </LocalizationProvider>
