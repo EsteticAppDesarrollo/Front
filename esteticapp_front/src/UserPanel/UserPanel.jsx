@@ -6,40 +6,47 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from 'react';
 import Alert from '@mui/material/Alert';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import InputLabel from '@mui/material/InputLabel';
+import Navbar from '../NavBarUser/NavBar'
+
 
 export default function SignUpUser() {
-    const [date, setDate] = useState('');
+    const [adress, setAdress] = useState('');
+    const [birthdate, setBirthdate] = useState('');
+    const [emailAddress, setEmailAddress] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [userId, setUserId] = useState('');
 
+    //Modificar usuario
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
         let User = {
-            emailAddress: data.get('email'),
-            password: data.get('password'),
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            phone: parseInt(data.get('phone')),
-            adress: data.get('adress'),
-            country: data.get('country'),
-            province: data.get('province'),
-            city: data.get('city'),
-            birthdate: new Date(date),
+            emailAddress: emailAddress,
+            name: name,
+            lastName: lastName,
+            phone: parseInt(phone),
+            adress: adress,
+            birthdate: new Date(birthdate),
+            userId:userId,
         };
-        var conexion = window.conexion
+        let userDTO ={
+            user: User,
+        }
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(User)
+            body: JSON.stringify(userDTO)
         };
-        fetch(window.conexion + '/User/CreateUser', requestOptions)
+        fetch(window.conexion + '/User/ModifyUser', requestOptions)
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();
@@ -61,9 +68,23 @@ export default function SignUpUser() {
                 alert500.style.display = '';
             })
     };
+    //Cargar datos del usuario
+    useEffect(() => {
+        var user = JSON.parse(localStorage.getItem("user"));
+
+        setName(user.user.name != null ? user.user.name : '');
+        setLastName(user.user.lastName != null ? user.user.lastName : '');
+        setEmailAddress(user.user.emailAddress != null ? user.user.emailAddress : '');
+        setBirthdate(user.user.birthdate != null ? user.user.birthdate : '');
+        setAdress(user.user.adress != null ? user.user.adress : '');
+        setPhone(user.user.phone != null ? user.user.phone : '');
+        setUserId(user.user.userId != null ? user.user.userId : 0)
+    }, [])
 
     return (
+        
         <Grid >
+            <Navbar />
             <CssBaseline />
             <Grid sx={{
                 backgroundImage: "url(/foto2.jpg)",
@@ -89,7 +110,8 @@ export default function SignUpUser() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
-                                        autoComplete="given-name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                         name="name"
                                         required
                                         fullWidth
@@ -101,6 +123,8 @@ export default function SignUpUser() {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
                                         required
                                         fullWidth
                                         id="lastName"
@@ -111,6 +135,8 @@ export default function SignUpUser() {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
                                         required
                                         fullWidth
                                         id="phone"
@@ -119,54 +145,16 @@ export default function SignUpUser() {
                                         type="number"
                                         autoComplete="family-name"
                                     />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="adress"
-                                        label="Dirección"
-                                        name="adress"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="country"
-                                        label="País"
-                                        name="country"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="province"
-                                        label="Provincia"
-                                        name="province"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="city"
-                                        label="Ciudad"
-                                        name="city"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                </Grid>                               
+                                <Grid item xs={12} sm={12} sx={{ width: '100vh' }}>
+                                    <InputLabel htmlFor="birthdate">Fecha de Nacimiento</InputLabel>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} >
                                         <DatePicker
                                             dateFormat="dd/MM/yyyy"
+                                            value={birthdate ? dayjs(birthdate) : null}
                                             onChange={(date) => {
                                                 const d = new Date(date).toLocaleDateString('fr-FR');
-                                                setDate(d);
+                                                setBirthdate(d);
                                             }}
                                         />
                                     </LocalizationProvider>
@@ -175,6 +163,8 @@ export default function SignUpUser() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
+                                    value={emailAddress}
+                                    onChange={(e) => setEmailAddress(e.target.value)}
                                         required
                                         fullWidth
                                         id="email"
@@ -182,18 +172,7 @@ export default function SignUpUser() {
                                         name="email"
                                         autoComplete="email"
                                     />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Contraseña"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                    />
-                                </Grid>
+                                </Grid>                                
                             </Grid>
                             <Button
                                 type="submit"
@@ -201,10 +180,10 @@ export default function SignUpUser() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Crear cuenta
+                                Guardar cambios
                             </Button>
                             <Alert severity="error" id='alertEmailDupicate' style={{ display: 'none' }}>El email ya se encuentra registrado</Alert>
-                            <Alert severity="error" id='alert500' style={{ display: 'none' }}>No pudo procesarse la creación de usuario</Alert>
+                            <Alert severity="error" id='alert500' style={{ display: 'none' }}>No pudo procesarse la creación de usuario, vuelva a intentarlo en unos minutos</Alert>
                             <Alert severity="error" id='alertIncorrectPassword' style={{ display: 'none' }}>El Email y/o Contraseña son incorrectos</Alert>
                         </Box>
                     </Box>

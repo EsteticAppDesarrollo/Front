@@ -36,15 +36,14 @@ export default function SignInSide() {
       .then(async response => {
         const isJson = response.headers.get('content-type')?.includes('application/json');
         const data = isJson && await response.json();
-        console.log(data)
         if (data?.status == 200) {
 
           if (data.message == "Medic") {
-            localStorage.setItem('medic', JSON.stringify(data.medic))
+            localStorage.setItem('medic', JSON.stringify(data))
             window.location.href = `/MedicPanel`
           }
           if (data.message == "User") {
-            localStorage.setItem('user', JSON.stringify(data.user))
+            localStorage.setItem('user', JSON.stringify(data))
             window.location.href = `/UserPanel`
           }
         }

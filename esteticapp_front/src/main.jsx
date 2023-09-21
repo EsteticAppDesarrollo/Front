@@ -7,7 +7,11 @@ import UserPanel from './UserPanel/UserPanel'
 import MedicPanel from './MedicPanel/MedicPanel'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+//LOCALHOST
 window.conexion = "https://localhost:44348/api";
+
+//SERVIDOR
+//window.conexion = "https://localhost:44348/api";
 
 const router = createBrowserRouter([
   {

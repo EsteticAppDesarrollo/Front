@@ -6,14 +6,13 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
+import MapsAutocomplete from '../Helpers/MapsAutocomplete'
 
 export default function SignUpUser() {
     const [date, setDate] = useState('');
@@ -33,7 +32,7 @@ export default function SignUpUser() {
             city: data.get('city'),
             birthdate: new Date(date),
         };
-        var conexion = window.conexion
+        
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -120,46 +119,7 @@ export default function SignUpUser() {
                                         autoComplete="family-name"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="adress"
-                                        label="Dirección"
-                                        name="adress"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="country"
-                                        label="País"
-                                        name="country"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="province"
-                                        label="Provincia"
-                                        name="province"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="city"
-                                        label="Ciudad"
-                                        name="city"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
+                                                       
                                 <Grid item xs={12} sm={6}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
@@ -171,6 +131,9 @@ export default function SignUpUser() {
                                         />
                                     </LocalizationProvider>
                                 </Grid>
+                                <Grid sx={{mt:2,mb:-1}}>
+                                    <MapsAutocomplete />
+                                </Grid>  
                                 <Grid item xs={12} sm={6}>
                                 </Grid>
                                 <Grid item xs={12}>
