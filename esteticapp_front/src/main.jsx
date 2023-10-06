@@ -5,6 +5,7 @@ import NewUser from './NewUser/NewUser'
 import NewMedic from './NewMedic/NewMedic'
 import UserPanel from './UserPanel/UserPanel'
 import MedicPanel from './MedicPanel/MedicPanel'
+import UserHome from './UserHome/UserHome'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //LOCALHOST
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path:"/MedicPanel",
     element: <MedicPanel />
+  },
+  {
+    path:"/UserHome",
+    element: <UserHome />
   }
 ])
 

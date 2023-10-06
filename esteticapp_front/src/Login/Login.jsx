@@ -155,7 +155,7 @@ export default function SignInSide() {
                 Iniciar sesión
               </Button>
               <Alert severity="error" id='alert' style={{ display: 'none' }}>Usuario y/o Contraseña incorrectos</Alert>
-              <Alert severity="error" id='alert500' style={{ display: 'none' }}>Hubo un error en el servidor</Alert>
+              <Alert severity="error" id='alert500' style={{ display: 'none' }}>Hubo un error en el servidor, intente en unos minutos</Alert>
               <Grid container>
                 <Grid item xs>
                   <Link href="/NewUser" variant="body2">

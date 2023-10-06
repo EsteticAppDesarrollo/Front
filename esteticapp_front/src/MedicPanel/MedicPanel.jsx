@@ -48,7 +48,7 @@ export default function SignUpUser() {
     //Cargar datos del medico
     useEffect(() => {
         var medic = JSON.parse(localStorage.getItem("medic"));
-
+        
         setName(medic.medic.name != null ? medic.medic.name : '');
         setLastName(medic.medic.lastName != null ? medic.medic.lastName : '');
         setTuition(medic.medic.tuition != null ? medic.medic.tuition : '');

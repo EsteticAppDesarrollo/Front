@@ -43,7 +43,7 @@ export default function SignUpMedic() {
                 const data = isJson && await response.json();
                 
                 if (data?.status == 200 && data?.message == "Exitoso") {
-                    localStorage.setItem('medic', JSON.stringify(data.medic))
+                    localStorage.setItem('medic', JSON.stringify(data))
                     window.location.href = `/MedicPanel`
                 }
                 if (data?.status == 200 && data?.message == "el email ya esta registrado") {
