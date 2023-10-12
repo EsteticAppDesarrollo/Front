@@ -6,7 +6,10 @@ import NewMedic from './NewMedic/NewMedic'
 import UserPanel from './UserPanel/UserPanel'
 import MedicPanel from './MedicPanel/MedicPanel'
 import UserHome from './UserHome/UserHome'
+import MedicPage from './MedicPage/MedicPage'
+import theme from './Styles/Theme'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ThemeProvider } from '@mui/material/styles';
 
 //LOCALHOST
 window.conexion = "https://localhost:44348/api";
@@ -38,11 +41,17 @@ const router = createBrowserRouter([
   {
     path:"/UserHome",
     element: <UserHome />
+  },
+  {
+    path:"/MedicPage/:MedicId",
+    element: <MedicPage />
   }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+     <ThemeProvider theme={theme}>
+        <RouterProvider router={router}/>
+     </ThemeProvider>
   </React.StrictMode>,
 )

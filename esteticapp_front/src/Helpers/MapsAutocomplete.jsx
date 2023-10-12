@@ -30,17 +30,7 @@ export default function GoogleMaps() {
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
 
-  if (typeof window !== 'undefined' && !loaded.current) {
-    if (!document.querySelector('#google-maps')) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-        document.querySelector('head'),
-        'google-maps',
-      );
-    }
 
-    loaded.current = true;
-  }
 
   const fetch = React.useMemo(
     () =>

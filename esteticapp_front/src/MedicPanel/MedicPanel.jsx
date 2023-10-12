@@ -24,12 +24,14 @@ import MapsAutocomplete from '../Helpers/MapsAutocomplete'
 import dayjs from 'dayjs';
 
 export default function SignUpUser() {
+    
     const [date, setDate] = useState('');
     const [treatment, setTreatment] = useState([]);
     const [treatmentApi, setTreatmentApi] = useState([]);
     const [paymentMethodApi, setPaymentMethodApi] = useState([]);
     const [treatmentSelected, setTreatmentSelected] = useState([]);
     const [paymentMethodSelected, setPaymentMethodSelected] = useState([]);
+    const [selectedHours, setSelectedHours] = useState([]);
 
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -48,7 +50,7 @@ export default function SignUpUser() {
     //Cargar datos del medico
     useEffect(() => {
         var medic = JSON.parse(localStorage.getItem("medic"));
-        
+
         setName(medic.medic.name != null ? medic.medic.name : '');
         setLastName(medic.medic.lastName != null ? medic.medic.lastName : '');
         setTuition(medic.medic.tuition != null ? medic.medic.tuition : '');
@@ -106,8 +108,8 @@ export default function SignUpUser() {
             lstMedicPaymentMethod: paymentMethodSelected,
             lstTreatment: treatmentSelected,
             lstPaymentMethod: paymentMethodSelected,
+            lstAttentionSchedule: selectedHours
         }
-        console.log(MedicDTO)
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -117,9 +119,7 @@ export default function SignUpUser() {
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();
-                console.log(data);
                 if (data?.status == 200) {
-                    console.log(data);
                     localStorage.removeItem('medic')
                     localStorage.setItem('medic', JSON.stringify(data))
                     console.log("se actualizó mostro")
@@ -133,6 +133,10 @@ export default function SignUpUser() {
             })
     };
 
+    const hoursArray = [
+        "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+        "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
+    ];
     return (
         <Grid>
             <Navbar />
@@ -337,20 +341,17 @@ export default function SignUpUser() {
                                             multiple
                                             id="tratamientos"
                                             onChange={(event, values) => {
-                                                // Filtra los valores que ya existen en treatmentSelected
                                                 const existingValues = values.filter((value) =>
                                                     treatmentSelected.some((selectedValue) => selectedValue.description === value.description)
                                                 );
-                                                // Filtra los valores que son nuevos (no están en treatmentSelected)
                                                 const newValues = values.filter((value) =>
                                                     !treatmentSelected.some((selectedValue) => selectedValue.description === value.description)
                                                 );
-                                                // Agrega los nuevos valores a treatment
                                                 setTreatment([...treatment, ...newValues]);
-                                                // Actualiza treatmentSelected con todos los valores seleccionados
                                                 setTreatmentSelected([...existingValues, ...newValues]);
                                             }}
                                             options={treatmentApi}
+                                            isOptionEqualToValue={(option, value) => option.idTreatment === value.idTreatment}
                                             disableCloseOnSelect
                                             value={treatmentSelected}
                                             getOptionLabel={(option) => option.description}
@@ -365,7 +366,6 @@ export default function SignUpUser() {
                                                     {option.description}
                                                 </li>
                                             )}
-                                            style={{ width: 750 }}
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Tratamientos" placeholder="Tratamientos" />
                                             )}
@@ -376,21 +376,17 @@ export default function SignUpUser() {
                                         <Autocomplete
                                             multiple
                                             id="formasDePago"
-                                            options={paymentMethodApi}
                                             onChange={(event, values) => {
-                                                // Filtra los valores que ya existen en paymentMethodSelected
                                                 const existingValues = values.filter((value) =>
-                                                    paymentMethodSelected.some((selectedValue) => selectedValue.description === value.description)
+                                                    paymentMethodApi.some((option) => option.idPaymentMethod === value.idPaymentMethod)
                                                 );
-
-                                                // Filtra los valores que son nuevos (no están en paymentMethodSelected)
                                                 const newValues = values.filter((value) =>
-                                                    !paymentMethodSelected.some((selectedValue) => selectedValue.description === value.description)
+                                                    !paymentMethodApi.some((option) => option.idPaymentMethod === value.idPaymentMethod)
                                                 );
-
-                                                // Actualiza paymentMethodSelected con todos los valores seleccionados
                                                 setPaymentMethodSelected([...existingValues, ...newValues]);
                                             }}
+                                            options={paymentMethodApi}
+                                            isOptionEqualToValue={(option, value) => option.idWayToPay === value.idWayToPay}
                                             disableCloseOnSelect
                                             value={paymentMethodSelected}
                                             getOptionLabel={(option) => option.description}
@@ -405,12 +401,38 @@ export default function SignUpUser() {
                                                     {option.description}
                                                 </li>
                                             )}
-                                            style={{ width: 750 }}
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Formas de pago" placeholder="" />
                                             )}
                                         />
+
                                     </Grid>
+                                    <Grid item xs={12} sm={12}>
+                                        <Autocomplete
+                                            multiple
+                                            id="horas"
+                                            options={hoursArray}
+                                            onChange={(event, values) => {
+                                                setSelectedHours(values);
+                                            }}
+                                            disableCloseOnSelect                                           
+                                            renderOption={(props, option, { selected }) => (
+                                                <li {...props}>
+                                                    <Checkbox
+                                                        icon={icon}
+                                                        checkedIcon={checkedIcon}
+                                                        style={{ marginRight: 8 }}
+                                                        checked={selected}
+                                                    />
+                                                    {option}
+                                                </li>
+                                            )}
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Selecciona horas" />
+                                            )}
+                                        />
+                                    </Grid>
+
                                 </Grid>
                                 <Button
                                     type="submit"
