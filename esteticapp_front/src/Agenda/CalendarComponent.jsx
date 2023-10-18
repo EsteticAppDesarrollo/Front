@@ -22,7 +22,7 @@ function CalendarComponent({ onSelectDate }) {
                     <DatePicker
                         value={selectedDate}
                         onChange={handleDateChange}
-                        renderInput={(params) => <TextField {...params} label="Selecciona una fecha" />}
+                        textField={(params) => <TextField {...params} label="Selecciona una fecha" />}
                         dateFormat="dd/MM/yyyy"
                         valueFormat={(value) => (value ? dayjs(value).format("DD/MM/YYYY") : "")}
                         sx={{width:300}}

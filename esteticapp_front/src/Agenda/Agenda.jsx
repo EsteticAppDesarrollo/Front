@@ -3,7 +3,7 @@ import CalendarComponent from "../Agenda/CalendarComponent";
 import TimeSlots from "../Agenda/TimeSlots";
 import { Grid, Typography, Container, Paper } from '@mui/material';
 
-function Agenda(idMedic) {
+function Agenda(idMedic,medic) {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -14,7 +14,6 @@ function Agenda(idMedic) {
     const handleSlotSelect = (slot) => {
         setSelectedSlot(slot);
     };
-
     return (
         <Container>
             <Typography variant="h4" gutterBottom>
@@ -26,7 +25,7 @@ function Agenda(idMedic) {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     {selectedDate && (
-                        <TimeSlots selectedDate={selectedDate} onSelectSlot={handleSlotSelect} idMedic={idMedic}/>
+                        <TimeSlots selectedDate={selectedDate} onSelectSlot={handleSlotSelect} idMedic={idMedic} medic={medic}/>
                     )}
                 </Grid>
             </Grid>

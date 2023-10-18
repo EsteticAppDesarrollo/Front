@@ -7,6 +7,8 @@ import UserPanel from './UserPanel/UserPanel'
 import MedicPanel from './MedicPanel/MedicPanel'
 import UserHome from './UserHome/UserHome'
 import MedicPage from './MedicPage/MedicPage'
+import UserShift from './UserShift/UserShift'
+import MedicShift from './MedicShift/MedicShift'
 import theme from './Styles/Theme'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
   {
     path:"/MedicPage/:MedicId",
     element: <MedicPage />
+  },
+  {
+    path:"/UserShift",
+    element: <UserShift />
+  },
+  {
+    path:"/MedicShift",
+    element: <MedicShift />
   }
 ])
 

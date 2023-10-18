@@ -12,8 +12,8 @@ const mapStyles = {
 
 export default function MedicPage() {
     const [address, setAddress] = useState('');
-    const [medic, setMedic] = useState(null); // Inicializar a null
-    const [loading, setLoading] = useState(true); // Estado de carga
+    const [medic, setMedic] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { MedicId } = useParams();
     const [selectedTab, setSelectedTab] = useState(0);
 
@@ -128,7 +128,7 @@ export default function MedicPage() {
                             <Tab label="Formas de pago" sx={tabLabelStyle}/>
                             <Tab label="Turnos" sx={tabLabelStyle}/>
                         </Tabs>
-                        {selectedTab === 3 && <Agenda idMedic={MedicId}/>}                        
+                        {selectedTab === 3 && <Agenda idMedic={MedicId} medic={medic}/>}
                     </Container>
                 </Grid>
 
