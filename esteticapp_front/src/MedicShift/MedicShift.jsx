@@ -14,50 +14,17 @@ export default function MedicShift() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [shifts, setShifts] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [idShift, setIdShift] = React.useState(null);
     const openMenu = Boolean(anchorEl);
-    const [openModal, setOpenModal] = React.useState(false);
-    const [selectedRowId, setSelectedRowId] = React.useState(null);
-
-    const handleClick = (event, rowId) => {
+    const handleClick = (event, id) => {
+        setIdShift(id);
         setAnchorEl(event.currentTarget);
-        setSelectedRowId(rowId); // Almacena el ID del elemento seleccionado
     };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-        setSelectedRowId(null); // Restablece el ID al cerrar el menú
-    };
-
-    const handleOpenCancel = () => {
-        setOpenModal(true);
-        handleClose(); // Cierra el menú antes de abrir el modal
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setSelectedRowId(null); // Restablece el ID al cerrar el modal
-    };
-
-    useEffect(() => {
-        // Tu código para cargar los turnos (shifts)
-    }, []);
-
-    const columns = [
-        { id: 'date', label: 'Fecha de turno', minWidth: 170 },
-        { id: 'name', label: 'Nombre', minWidth: 170 },
-        { id: 'lastName', label: 'Apellido', minWidth: 170 },
-        { id: 'dni', label: 'DNI', minWidth: 170 },
-        { id: 'phone', label: 'Telefono', minWidth: 170 },
-        { id: 'motive', label: 'Motivo', minWidth: 170 },
-        { id: 'action', label: '', minWidth: 170 }
-    ];
-
-    const options = [
-        'Cancelar',
-        'Postergar'
-    ];
-
-    const ITEM_HEIGHT = 48;
+    const handleClose = () => { setAnchorEl(null); };
+    const [openModal, setOpenModal] = React.useState(false);
+    const handleOpenCancel = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
+    const [openSuccessCancel, setOpenSuccessCancel] = React.useState(false);
 
     const style = {
         position: 'absolute',
@@ -70,6 +37,92 @@ export default function MedicShift() {
         boxShadow: 24,
         p: 4,
     };
+    //Seteo de pagina del Table
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+    //cerrar modal de turno cancelado y del modal de cancelacion de turno
+    const handleSuccessCancel = () => {
+        handleCloseModal();
+        setOpenSuccessCancel(false);
+    }
+    //Registros por pagina del Table
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+    //ruteo de apertura de modal, cancelacion/postergacion
+    const handleCancelModal = (option, id) => {
+        if (option === "Cancelar") {
+            handleOpenCancel();
+        }
+        if (option === "Postergar") {
+
+        }
+    }
+    //fetch de cancelacion de turno
+    const handleCancelShift = () => {
+        const medicalShift = {
+            id: idShift
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(medicalShift)
+        };
+        fetch(window.conexion + '/Medic/CancelShift', requestOptions)
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson && await response.json();
+                if (data == 'false') {
+
+                }
+                else {
+                    setOpenSuccessCancel(true);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                console.log("no anduvo catch")
+            })
+    }
+    //Get de todos los turnos
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                var medic = JSON.parse(localStorage.getItem("medic"));
+
+                const response = await fetch(window.conexion + "/Medic/GetShiftByMedic?medicId=" + medic.medic.medicId);
+                if (!response.ok) {
+                    throw new Error('No se pudieron obtener los turnos.');
+                }
+                const data = await response.json();
+                setShifts(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
+    //columnas del Table
+    const columns = [
+        { id: 'date', label: 'Fecha de turno', minWidth: 170 },
+        { id: 'hour', label: 'Hora de turno', minWidth: 170 },
+        { id: 'name', label: 'Nombre', minWidth: 170 },
+        { id: 'lastName', label: 'Apellido', minWidth: 170 },
+        { id: 'dni', label: 'DNI', minWidth: 170 },
+        { id: 'phone', label: 'Telefono', minWidth: 170 },
+        { id: 'motive', label: 'Motivo', minWidth: 170 },
+        { id: 'status', label: 'Estado', minWidth: 170 },
+        { id: 'action', label: '', minWidth: 170 }
+    ];
+    //opciones del menu que esta en el Table
+    const options = [
+        'Cancelar',
+        'Postergar'
+    ];
+
+    const ITEM_HEIGHT = 48;
 
     return (
         <Grid>
@@ -96,13 +149,15 @@ export default function MedicShift() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => {
                                         return (
-                                            <TableRow key={row.id}>
+                                            <TableRow key={row.code}>
                                                 <TableCell align="left">{dayjs(row.date).format("DD/MM/YYYY")}</TableCell>
+                                                <TableCell align="left">{row.hour}</TableCell>
                                                 <TableCell align="left">{row.user.name}</TableCell>
                                                 <TableCell align="left">{row.user.lastName}</TableCell>
-                                                <TableCell align="left">38.465.215</TableCell>
+                                                <TableCell align="left">{row.id}</TableCell>
                                                 <TableCell align="left">{row.user.phone}</TableCell>
                                                 <TableCell align="left">{row.treatmentDescription}</TableCell>
+                                                <TableCell align="left">{row.status}</TableCell>
                                                 <TableCell align="right">
                                                     <div>
                                                         <IconButton
@@ -131,7 +186,7 @@ export default function MedicShift() {
                                                             }}
                                                         >
                                                             {options.map((option) => (
-                                                                <MenuItem key={option} onClick={handleOpenCancel}>
+                                                                <MenuItem key={option} onClick={() => handleCancelModal(option)}>
                                                                     {option}
                                                                 </MenuItem>
                                                             ))}
@@ -145,7 +200,13 @@ export default function MedicShift() {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        // Resto del código de paginación
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={shifts.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                 </Paper>
             </Grid>
@@ -161,9 +222,47 @@ export default function MedicShift() {
                         Cancelación de turno
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        ¿Está seguro de que desea cancelar el turno del ID: {selectedRowId}?
+                        ¿Está seguro que desea cancelar el turno?
                     </Typography>
-                    <Button onClick={handleCloseModal}>Cancelar turno</Button>
+                    <Button
+                        sx={{
+                            mt: 2,
+                            bgcolor: 'red',
+                            color: 'white',
+                            float: 'right',
+                            '&:hover': {
+                                bgcolor: 'darkred',
+                                color: 'white',
+                            },
+                        }}
+                        onClick={handleCancelShift}
+                    >
+                        Cancelar turno
+                    </Button>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={openSuccessCancel}
+                onClose={handleSuccessCancel}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    p: 4,
+                }}>
+                    <Typography id="modal-description" sx={{ mt: 2 }}>
+                        El turno fue cancelado con exito.
+                    </Typography>
+                    <Button onClick={handleSuccessCancel}>Cerrar</Button>
                 </Box>
             </Modal>
         </Grid>
