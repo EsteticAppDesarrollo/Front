@@ -43,8 +43,9 @@ function TimeSlots({ selectedDate, onSelectSlot, idMedic }) {
             dateRequest: date,
             hour: selectedHour,
             idMedic: idMedic.idMedic,
-            idUser: user.user.userId,
-            idTreatment: motivo == 'Tratamiento' ? selectedTreatment : 0
+            userId: user.user.userId,
+            idTreatment: motivo == 'Tratamiento' ? selectedTreatment : 0,
+            status: 'Pendiente'
         }
         const requestOptions = {
             method: 'POST',
@@ -55,8 +56,8 @@ function TimeSlots({ selectedDate, onSelectSlot, idMedic }) {
       .then(async response => {
         const isJson = response.headers.get('content-type')?.includes('application/json');
         const data = isJson && await response.json();
-        console.log(data);
-        setSuccessModalOpen(true);
+        if(data == 'false'){setErrorModalFetchOpen(true);}
+        else{setSuccessModalOpen(true);}
       })
       .catch(function (error) {
         console.log(error);
