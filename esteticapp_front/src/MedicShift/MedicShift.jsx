@@ -21,10 +21,19 @@ export default function MedicShift() {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => { setAnchorEl(null); };
+
     const [openModal, setOpenModal] = React.useState(false);
     const handleOpenCancel = () => setOpenModal(true);
     const handleCloseModal = () => setOpenModal(false);
     const [openSuccessCancel, setOpenSuccessCancel] = React.useState(false);
+
+    const [openModalPostpone, setOpenModalPostpone] = React.useState(false);
+    const handleOpenPostpone = () => setOpenModalPostpone(true);
+    const handleClosePostpone = () => setOpenModalPostpone(false);
+
+    const [openSuccessPostpone, setOpenSuccessPostpone] = React.useState(false);
+
+    const [openErrorModal, setOpenErrorModal] = React.useState(false);
 
     const style = {
         position: 'absolute',
@@ -46,18 +55,23 @@ export default function MedicShift() {
         handleCloseModal();
         setOpenSuccessCancel(false);
     }
+    //cerrar modal de turno cancelado y del modal de cancelacion de turno
+    const handleSuccessPostpone = () => {
+        setOpenSuccessPostpone(false);
+        setOpenModalPostpone(false);
+    }
     //Registros por pagina del Table
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
     //ruteo de apertura de modal, cancelacion/postergacion
-    const handleCancelModal = (option, id) => {
+    const handleCancelModal = (option) => {
         if (option === "Cancelar") {
             handleOpenCancel();
         }
         if (option === "Postergar") {
-
+            handleOpenPostpone();
         }
     }
     //fetch de cancelacion de turno
@@ -79,6 +93,32 @@ export default function MedicShift() {
                 }
                 else {
                     setOpenSuccessCancel(true);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                console.log("no anduvo catch")
+            })
+    }
+    //fetch de postergacion de turno
+    const handlePostponeShift = () => {
+        const medicalShift = {
+            id: idShift
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(medicalShift)
+        };
+        fetch(window.conexion + '/Medic/PostponeShift', requestOptions)
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson && await response.json();
+                if (data == 'false') {
+
+                }
+                else {
+                    setOpenSuccessPostpone(true);
                 }
             })
             .catch(function (error) {
@@ -265,6 +305,61 @@ export default function MedicShift() {
                     <Button onClick={handleSuccessCancel}>Cerrar</Button>
                 </Box>
             </Modal>
+
+            <Modal
+                open={openModalPostpone}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Postergación de turno
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        ¿Está seguro que desea postergar el turno?
+                    </Typography>
+                    <Button
+                        sx={{
+                            mt: 2,
+                            bgcolor: 'red',
+                            color: 'white',
+                            float: 'right',
+                            '&:hover': {
+                                bgcolor: 'darkred',
+                                color: 'white',
+                            },
+                        }}
+                        onClick={handlePostponeShift}
+                    >
+                        Postergar turno
+                    </Button>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={openSuccessPostpone}
+                onClose={handleSuccessPostpone}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    p: 4,
+                }}>
+                    <Typography id="modal-description" sx={{ mt: 2 }}>
+                        El turno fue postergado con exito.
+                    </Typography>
+                    <Button onClick={handleSuccessPostpone}>Cerrar</Button>
+                </Box>
+            </Modal>            
         </Grid>
     );
 }
