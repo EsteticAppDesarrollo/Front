@@ -164,7 +164,7 @@ export default function SignInSide() {
                 </Grid>
                 <Grid item>
                   <Link onClick={handleOpen} variant="body2">
-                    No tiene una cuenta? Registrese"
+                    Registrarse     
                   </Link>
 
                   <Modal

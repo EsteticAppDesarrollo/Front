@@ -29,7 +29,6 @@ export default function SignUpMedic() {
             adress: document.getElementById('google-map-demo').value,
             emailAddress: data.get('email'),
             password: data.get('password'),
-            emailAddress: data.get('email'),
             startDate: new Date(date),
         };
         const requestOptions = {
