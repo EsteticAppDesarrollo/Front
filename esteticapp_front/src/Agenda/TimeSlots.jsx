@@ -42,7 +42,7 @@ function TimeSlots({ selectedDate, onSelectSlot, idMedic }) {
         const Shift = {
             dateRequest: date,
             hour: selectedHour,
-            idMedic: idMedic.idMedic,
+            medicId: idMedic.idMedic,
             userId: user.user.userId,
             idTreatment: motivo == 'Tratamiento' ? selectedTreatment : 0,
             status: 'Pendiente'

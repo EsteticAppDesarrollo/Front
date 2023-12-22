@@ -101,8 +101,8 @@ export default function MedicPage() {
                         <img
                             src="https://imgs.search.brave.com/vYmDmX96nAineLn2FOtal5GsVroDHzAjwW3nBJCAdiA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/Zm90by1ncmF0aXMv/ZG9jdG9yLXBhY2ll/bnRlXzE0MjEtNjQu/anBnP3NpemU9NjI2/JmV4dD1qcGc"
                             alt="Imagen"
-                            width="500"
-                            height="400"
+                            width="200"
+                            height="200"
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>

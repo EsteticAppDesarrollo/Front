@@ -12,26 +12,14 @@ export const SidebarData = [
   },
   {
     title: 'Perfil',
-    path: '/PedidosPendientes',
+    path: '/UserPanel',
     icon: <IoIcons.IoIosPaper />,
     cName: 'nav-text'
   },
   {
     title: 'Turnos pendientes',
-    path: '/PedidosPendientes',
+    path: '/UserShift',
     icon: <IoIcons.IoIosPaper />,
     cName: 'nav-text'
-  },
-  {
-    title: 'Historial de turnos',
-    path: '/products',
-    icon: <FaIcons.FaCartPlus />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Favoritos',
-    path: '/team',
-    icon: <IoIcons.IoMdPeople />,
-    cName: 'nav-text'
-  },
+  }
 ];

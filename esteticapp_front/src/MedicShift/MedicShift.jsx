@@ -1,79 +1,24 @@
 import * as React from 'react';
-import {
-    Grid, Paper, TableContainer, Table, TableHead, TableRow,
-    TableCell, TableBody, TablePagination, Button
-    , IconButton, Menu, MenuItem, Modal, Box, Typography
-} from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {Grid,Button,Modal,Box,Typography} from '@mui/material';
 import Navbar from '../NavBar/NavBar';
 import { useEffect, useState } from 'react';
-import dayjs from "dayjs";
+import moment from 'moment';
+import 'moment/locale/es';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+
 
 export default function MedicShift() {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [shifts, setShifts] = React.useState([]);
-    const [anchorEl, setAnchorEl] = React.useState(null);
     const [idShift, setIdShift] = React.useState(null);
-    const openMenu = Boolean(anchorEl);
-    const handleClick = (event, id) => {
-        setIdShift(id);
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => { setAnchorEl(null); };
+    const minTime = moment('2000-01-01T07:00:00').toDate();
+    const maxTime = moment('2000-01-01T22:00:00').toDate();
+    const [events, setEvents] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [openSuccessCancel, setOpenSuccessCancel] = useState(false);
 
-    const [openModal, setOpenModal] = React.useState(false);
-    const handleOpenCancel = () => setOpenModal(true);
-    const handleCloseModal = () => setOpenModal(false);
-    const [openSuccessCancel, setOpenSuccessCancel] = React.useState(false);
+    moment.locale('es');
+    const localizer = momentLocalizer(moment);
 
-    const [openModalPostpone, setOpenModalPostpone] = React.useState(false);
-    const handleOpenPostpone = () => setOpenModalPostpone(true);
-    const handleClosePostpone = () => setOpenModalPostpone(false);
-
-    const [openSuccessPostpone, setOpenSuccessPostpone] = React.useState(false);
-
-    const [openErrorModal, setOpenErrorModal] = React.useState(false);
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
-    //Seteo de pagina del Table
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-    //cerrar modal de turno cancelado y del modal de cancelacion de turno
-    const handleSuccessCancel = () => {
-        handleCloseModal();
-        setOpenSuccessCancel(false);
-    }
-    //cerrar modal de turno cancelado y del modal de cancelacion de turno
-    const handleSuccessPostpone = () => {
-        setOpenSuccessPostpone(false);
-        setOpenModalPostpone(false);
-    }
-    //Registros por pagina del Table
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-    //ruteo de apertura de modal, cancelacion/postergacion
-    const handleCancelModal = (option) => {
-        if (option === "Cancelar") {
-            handleOpenCancel();
-        }
-        if (option === "Postergar") {
-            handleOpenPostpone();
-        }
-    }
     //fetch de cancelacion de turno
     const handleCancelShift = () => {
         const medicalShift = {
@@ -88,44 +33,35 @@ export default function MedicShift() {
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();
-                if (data == 'false') {
-
-                }
-                else {
+                if (data === true) {
                     setOpenSuccessCancel(true);
                 }
-            })
-            .catch(function (error) {
-                console.log(error);
-                console.log("no anduvo catch")
-            })
-    }
-    //fetch de postergacion de turno
-    const handlePostponeShift = () => {
-        const medicalShift = {
-            id: idShift
-        }
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(medicalShift)
-        };
-        fetch(window.conexion + '/Medic/PostponeShift', requestOptions)
-            .then(async response => {
-                const isJson = response.headers.get('content-type')?.includes('application/json');
-                const data = isJson && await response.json();
-                if (data == 'false') {
+                else {
 
                 }
-                else {
-                    setOpenSuccessPostpone(true);
-                }
             })
             .catch(function (error) {
                 console.log(error);
                 console.log("no anduvo catch")
             })
     }
+    //establecer el idShift con el id del evento seleccionado
+    useEffect(() => {
+        // Actualizar idShift cuando cambia selectedEvent
+        if (selectedEvent) {
+            setIdShift(selectedEvent.id);
+        }
+    }, [selectedEvent]);
+
+    const handleCancelShiftClick = () => {
+        if (selectedEvent) {
+            console.log(selectedEvent);
+            setIdShift(selectedEvent.id);
+            handleCancelShift();
+            // Cierra el modal de detalles
+            handleCloseModal();
+        }
+    };
     //Get de todos los turnos
     useEffect(() => {
         const fetchData = async () => {
@@ -137,229 +73,125 @@ export default function MedicShift() {
                     throw new Error('No se pudieron obtener los turnos.');
                 }
                 const data = await response.json();
-                setShifts(data);
+                console.log(data, 'data');
+
+                const updatedShifts = data.map((item) => {
+                    const formattedDateTimeInitial = moment(`${item.date} ${item.hour}`, "YYYY-MM-DD HH:mm").format();
+                    const endHour = moment(item.hour, 'HH:mm').add(1, 'hour').format('HH:mm');
+                    const formattedDateTimeEnd = moment(`${item.date} ${endHour}`, "YYYY-MM-DD HH:mm").format();
+                    return {
+                        id: item.id, // Asegúrate de tener un identificador único para cada evento
+                        title: item.treatmentDescription,
+                        start: moment(formattedDateTimeInitial).toDate(),
+                        end: moment(formattedDateTimeEnd).toDate(),
+                        hour: item.hour,
+                        user: item.user
+                    };
+                });
+
+                setEvents(updatedShifts);
+                console.log(events, 'asa')
             } catch (error) {
                 console.error(error);
             }
         };
         fetchData();
-    }, []);
-    //columnas del Table
-    const columns = [
-        { id: 'date', label: 'Fecha de turno', minWidth: 170 },
-        { id: 'hour', label: 'Hora de turno', minWidth: 170 },
-        { id: 'name', label: 'Nombre', minWidth: 170 },
-        { id: 'lastName', label: 'Apellido', minWidth: 170 },
-        { id: 'dni', label: 'DNI', minWidth: 170 },
-        { id: 'phone', label: 'Telefono', minWidth: 170 },
-        { id: 'motive', label: 'Motivo', minWidth: 170 },
-        { id: 'status', label: 'Estado', minWidth: 170 },
-        { id: 'action', label: '', minWidth: 170 }
-    ];
-    //opciones del menu que esta en el Table
-    const options = [
-        'Cancelar',
-        'Postergar'
-    ];
+    }, [setEvents]);
 
-    const ITEM_HEIGHT = 48;
+    const handleEventClick = (event) => {
+        setSelectedEvent(event);
+        setModalOpen(true);
+    };
 
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
     return (
         <Grid>
             <Navbar />
-            <Grid sx={{ p: 2 }}>
-                <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                    <TableContainer sx={{ maxHeight: 840 }}>
-                        <Table stickyHeader aria-label="sticky table">
-                            <TableHead>
-                                <TableRow>
-                                    {columns.map((column) => (
-                                        <TableCell
-                                            key={column.id}
-                                            align={column.align}
-                                            style={{ minWidth: column.minWidth, backgroundColor: 'lightgrey' }}
-                                        >
-                                            {column.label}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {shifts
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row) => {
-                                        return (
-                                            <TableRow key={row.code}>
-                                                <TableCell align="left">{dayjs(row.date).format("DD/MM/YYYY")}</TableCell>
-                                                <TableCell align="left">{row.hour}</TableCell>
-                                                <TableCell align="left">{row.user.name}</TableCell>
-                                                <TableCell align="left">{row.user.lastName}</TableCell>
-                                                <TableCell align="left">{row.id}</TableCell>
-                                                <TableCell align="left">{row.user.phone}</TableCell>
-                                                <TableCell align="left">{row.treatmentDescription}</TableCell>
-                                                <TableCell align="left">{row.status}</TableCell>
-                                                <TableCell align="right">
-                                                    <div>
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            id="long-button"
-                                                            aria-controls={openMenu ? 'long-menu' : undefined}
-                                                            aria-expanded={openMenu ? 'true' : undefined}
-                                                            aria-haspopup="true"
-                                                            onClick={(event) => handleClick(event, row.id)}
-                                                        >
-                                                            <MoreVertIcon />
-                                                        </IconButton>
-                                                        <Menu
-                                                            id="long-menu"
-                                                            MenuListProps={{
-                                                                'aria-labelledby': 'long-button',
-                                                            }}
-                                                            anchorEl={anchorEl}
-                                                            open={openMenu}
-                                                            onClose={handleClose}
-                                                            PaperProps={{
-                                                                style: {
-                                                                    maxHeight: ITEM_HEIGHT * 4.5,
-                                                                    width: '20ch',
-                                                                },
-                                                            }}
-                                                        >
-                                                            {options.map((option) => (
-                                                                <MenuItem key={option} onClick={() => handleCancelModal(option)}>
-                                                                    {option}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </Menu>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
-                        component="div"
-                        count={shifts.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </Paper>
-            </Grid>
+            <div className="App" style={{ height: '100vh' }}>
+                <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: '100%' }}
+                    messages={{
+                        next: "Siguiente",
+                        previous: "Anterior",
+                        today: "Hoy",
+                        month: "Mes",
+                        week: "Semana",
+                        day: "Día"
+                    }}
+                    min={minTime}
+                    max={maxTime}
+                    onSelectEvent={handleEventClick}
+                />
+            </div>
 
+            {/* Modal para mostrar detalles del evento */}
             <Modal
-                open={openModal}
+                open={modalOpen}
                 onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="event-modal-title"
+                aria-describedby="event-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Cancelación de turno
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
+                    <Typography variant="h6" component="h2" id="event-modal-title">
+                        Detalles del Turno
                     </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        ¿Está seguro que desea cancelar el turno?
+                    <Typography id="event-modal-description">
+                        {/* Muestra los detalles del evento */}
+                        {selectedEvent && (
+                            <>
+                                <div>Motivo: {selectedEvent.title}</div>
+                                <div>Fecha: {moment(selectedEvent.start).format('DD/MM/YY').toString() + ' ' + selectedEvent.hour}</div>
+                            </>
+                        )}
                     </Typography>
-                    <Button
-                        sx={{
-                            mt: 2,
-                            bgcolor: 'red',
-                            color: 'white',
-                            float: 'right',
-                            '&:hover': {
-                                bgcolor: 'darkred',
-                                color: 'white',
-                            },
-                        }}
-                        onClick={handleCancelShift}
-                    >
-                        Cancelar turno
-                    </Button>
+                    <Typography variant="h6" component="h2" id="event-modal-title">
+                        Detalles del paciente
+                    </Typography>
+                    <Typography id="event-modal-description">
+                        {/* Muestra los detalles del evento */}
+                        {selectedEvent && (
+                            <>
+                                <div>Nombre: {selectedEvent.user.name}</div>
+                                <div>Apellido: {selectedEvent.user.lastName}</div>
+                            </>
+                        )}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={handleCancelShiftClick}>
+                            Cancelar Turno
+                        </Button>
+                        <Button variant="contained" onClick={handleCloseModal}>
+                            Cerrar
+                        </Button>
+                    </Box>
                 </Box>
             </Modal>
-
+            {/*Modal para mostrar la confirmación de la cancelacion*/}
             <Modal
                 open={openSuccessCancel}
-                onClose={handleSuccessCancel}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
+                onClose={() => setOpenSuccessCancel(false)}
+                aria-labelledby="success-modal-title"
+                aria-describedby="success-modal-description"
             >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 400,
-                    bgcolor: 'background.paper',
-                    border: '2px solid #000',
-                    boxShadow: 24,
-                    p: 4,
-                }}>
-                    <Typography id="modal-description" sx={{ mt: 2 }}>
-                        El turno fue cancelado con exito.
+                {/* Contenido del modal de éxito */}
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
+                    <Typography variant="h6" component="h2" id="success-modal-title">
+                        ¡Turno Cancelado!
                     </Typography>
-                    <Button onClick={handleSuccessCancel}>Cerrar</Button>
-                </Box>
-            </Modal>
-
-            <Modal
-                open={openModalPostpone}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Postergación de turno
+                    <Typography id="success-modal-description">
+                        El turno se ha cancelado exitosamente.
                     </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        ¿Está seguro que desea postergar el turno?
-                    </Typography>
-                    <Button
-                        sx={{
-                            mt: 2,
-                            bgcolor: 'red',
-                            color: 'white',
-                            float: 'right',
-                            '&:hover': {
-                                bgcolor: 'darkred',
-                                color: 'white',
-                            },
-                        }}
-                        onClick={handlePostponeShift}
-                    >
-                        Postergar turno
+                    <Button variant="contained" onClick={() => setOpenSuccessCancel(false)}>
+                        Cerrar
                     </Button>
                 </Box>
             </Modal>
-
-            <Modal
-                open={openSuccessPostpone}
-                onClose={handleSuccessPostpone}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 400,
-                    bgcolor: 'background.paper',
-                    border: '2px solid #000',
-                    boxShadow: 24,
-                    p: 4,
-                }}>
-                    <Typography id="modal-description" sx={{ mt: 2 }}>
-                        El turno fue postergado con exito.
-                    </Typography>
-                    <Button onClick={handleSuccessPostpone}>Cerrar</Button>
-                </Box>
-            </Modal>            
         </Grid>
     );
 }

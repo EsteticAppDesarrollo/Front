@@ -9,6 +9,7 @@ import UserHome from './UserHome/UserHome'
 import MedicPage from './MedicPage/MedicPage'
 import UserShift from './UserShift/UserShift'
 import MedicShift from './MedicShift/MedicShift'
+import MedicOldShift from './MedicOldShift/MedicOldShift'
 import theme from './Styles/Theme'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
@@ -55,7 +56,13 @@ const router = createBrowserRouter([
   {
     path:"/MedicShift",
     element: <MedicShift />
+  },
+  {
+    path:"/MedicOldShift",
+    element: <MedicOldShift />
   }
+
+  
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

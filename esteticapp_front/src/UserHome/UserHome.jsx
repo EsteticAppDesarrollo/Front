@@ -8,14 +8,78 @@ import MedicCard from '../Helpers/MedicCard';
 import Navbar from '../NavBarUser/NavBar';
 
 export default function UserHome() {
+    const [originalMedics, setOriginalMedics] = useState([]);
     const [medics, setMedics] = useState([]);
+    const [searchValue, setSearchValue] = useState("");
+    const [searchMap, setSearchMap] = useState("");
 
+    //Trae todos los medicos
     useEffect(() => {
-        fetch(window.conexion + "/Medic/GetMedics")
-            .then(response => response.json())
-            .then(data => setMedics(data))
-            .catch(error => console.error(error));
+        const fetchData = async () => {
+            try {
+                var user = JSON.parse(localStorage.getItem("user"));
+                const response = await fetch(window.conexion + "/Medic/GetMedics?userId=" +user.user.userId);
+                if (!response.ok) {
+                    throw new Error('No se pudieron obtener los médicos.');
+                }
+                const data = await response.json();
+
+                setOriginalMedics(data);
+                setMedics(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
     }, []);
+    //Agrega/saca de favoritos
+    const handleFavoriteToggle = async (medicId) => {
+        try {
+            var user = JSON.parse(localStorage.getItem("user"));
+            const body = {
+                userId: user.user.userId,
+                medicId: medicId
+            };
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            };
+            const response = await fetch(window.conexion + '/User/CreateFavorite', requestOptions);
+            
+            if (response.ok) {
+                // Actualizar el estado solo si el fetch es exitoso
+                const updatedMedics = medics.map(medic => {
+                    if (medic.medicId === medicId) {
+                        return { ...medic, favorite: !medic.favorite };
+                    }
+                    return medic;
+                });
+    
+                setMedics(updatedMedics);
+            } else {
+                console.error('Error al cambiar el estado de favoritos');
+            }
+        } catch (error) {
+            console.error('Error al cambiar el estado de favoritos', error);
+        }
+    };
+    //Filtra por el nombre
+    useEffect(() => {
+        // Filtrar médicos por nombre
+        const filteredMedics = originalMedics.filter(medic =>
+            medic.name.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        setMedics(filteredMedics);
+    }, [searchValue, originalMedics]);
+    //Filtra por ubicacion
+    useEffect(() => {        
+        const filteredMedics = originalMedics.filter(medic =>
+            medic.adress.toLowerCase().includes(searchMap.toLowerCase())
+        );
+        setMedics(filteredMedics);
+    }, [searchMap, originalMedics]);
 
     return (
         <Grid>
@@ -29,14 +93,16 @@ export default function UserHome() {
                             height: '100vh',
                             display: 'flex',
                             flexDirection: 'column',
-                            justifyContent: 'center', // Centra verticalmente
-                            alignItems: 'center', // Centra horizontalmente
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
                     >
                         <TextField
                             variant="outlined"
                             label="Nombre"
                             style={{ marginBottom: '10px', width: '80%' }}
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -51,6 +117,8 @@ export default function UserHome() {
                             variant="outlined"
                             label="Ubicación"
                             style={{ marginBottom: '10px', width: '80%' }}
+                            value={searchMap}
+                            onChange={(e) => setSearchMap(e.target.value)}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -88,6 +156,8 @@ export default function UserHome() {
                             MedicalOfficeName={medic.medicalOfficeName}
                             OfficeDescription={medic.officeDescription}
                             Adress={medic.adress}
+                            Favorite={medic.favorite}
+                            onFavoriteToggle={() => handleFavoriteToggle(medic.medicId)}
                         />
                     ))}
                 </Grid>

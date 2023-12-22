@@ -17,14 +17,8 @@ export const SidebarData = [
   },
   {
     title: 'Historial de turnos',
-    path: '/products',
+    path: '/MedicOldShift',
     icon: <FaIcons.FaCartPlus />,
     cName: 'nav-text'
-  },
-  {
-    title: 'Pacientes',
-    path: '/team',
-    icon: <IoIcons.IoMdPeople />,
-    cName: 'nav-text'
-  },
+  }
 ];

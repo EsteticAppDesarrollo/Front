@@ -14,9 +14,16 @@ export default function Navbar() {
   return (
     <>
       <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar'>
+        <div className='navbar' style={{ zIndex: 1001, display: 'flex', alignItems: 'center' }}>
           <Link to='#' className='menu-bars'>
             <FaIcons.FaBars onClick={showSidebar} />
+          </Link>
+          <Link to='#' className='user-icon'>
+            <img
+              src="/Icono_Estetic_App.png"
+              alt="Icono de usuario"
+              style={{ width: '70px', height: '50px', borderRadius: '80%', marginTop: 5}}
+            />
           </Link>
         </div>
         <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
