@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Grid,Button,Modal,Box,Typography} from '@mui/material';
+import { Grid, Button, Modal, Box, Typography } from '@mui/material';
 import Navbar from '../NavBar/NavBar';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
@@ -109,89 +109,91 @@ export default function MedicShift() {
     return (
         <Grid>
             <Navbar />
-            <div className="App" style={{ height: '100vh' }}>
-                <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: '100%' }}
-                    messages={{
-                        next: "Siguiente",
-                        previous: "Anterior",
-                        today: "Hoy",
-                        month: "Mes",
-                        week: "Semana",
-                        day: "Día"
-                    }}
-                    min={minTime}
-                    max={maxTime}
-                    onSelectEvent={handleEventClick}
-                />
-            </div>
+            <Grid sx={{ padding: 1 }}>
+                <div className="App" style={{ height: '100vh' }}>
+                    <Calendar
+                        localizer={localizer}
+                        events={events}
+                        startAccessor="start"
+                        endAccessor="end"
+                        style={{ height: '100%' }}
+                        messages={{
+                            next: "Siguiente",
+                            previous: "Anterior",
+                            today: "Hoy",
+                            month: "Mes",
+                            week: "Semana",
+                            day: "Día"
+                        }}
+                        min={minTime}
+                        max={maxTime}
+                        onSelectEvent={handleEventClick}
+                    />
+                </div>
 
-            {/* Modal para mostrar detalles del evento */}
-            <Modal
-                open={modalOpen}
-                onClose={handleCloseModal}
-                aria-labelledby="event-modal-title"
-                aria-describedby="event-modal-description"
-            >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
-                    <Typography variant="h6" component="h2" id="event-modal-title">
-                        Detalles del Turno
-                    </Typography>
-                    <Typography id="event-modal-description">
-                        {/* Muestra los detalles del evento */}
-                        {selectedEvent && (
-                            <>
-                                <div>Motivo: {selectedEvent.title}</div>
-                                <div>Fecha: {moment(selectedEvent.start).format('DD/MM/YY').toString() + ' ' + selectedEvent.hour}</div>
-                            </>
-                        )}
-                    </Typography>
-                    <Typography variant="h6" component="h2" id="event-modal-title">
-                        Detalles del paciente
-                    </Typography>
-                    <Typography id="event-modal-description">
-                        {/* Muestra los detalles del evento */}
-                        {selectedEvent && (
-                            <>
-                                <div>Nombre: {selectedEvent.user.name}</div>
-                                <div>Apellido: {selectedEvent.user.lastName}</div>
-                            </>
-                        )}
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={handleCancelShiftClick}>
-                            Cancelar Turno
-                        </Button>
-                        <Button variant="contained" onClick={handleCloseModal}>
+                {/* Modal para mostrar detalles del evento */}
+                <Modal
+                    open={modalOpen}
+                    onClose={handleCloseModal}
+                    aria-labelledby="event-modal-title"
+                    aria-describedby="event-modal-description"
+                >
+                    <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
+                        <Typography variant="h6" component="h2" id="event-modal-title">
+                            Detalles del Turno
+                        </Typography>
+                        <Typography id="event-modal-description">
+                            {/* Muestra los detalles del evento */}
+                            {selectedEvent && (
+                                <>
+                                    <div>Motivo: {selectedEvent.title}</div>
+                                    <div>Fecha: {moment(selectedEvent.start).format('DD/MM/YY').toString() + ' ' + selectedEvent.hour}</div>
+                                </>
+                            )}
+                        </Typography>
+                        <Typography variant="h6" component="h2" id="event-modal-title">
+                            Detalles del paciente
+                        </Typography>
+                        <Typography id="event-modal-description">
+                            {/* Muestra los detalles del evento */}
+                            {selectedEvent && (
+                                <>
+                                    <div>Nombre: {selectedEvent.user.name}</div>
+                                    <div>Apellido: {selectedEvent.user.lastName}</div>
+                                </>
+                            )}
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                            <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={handleCancelShiftClick}>
+                                Cancelar Turno
+                            </Button>
+                            <Button variant="contained" onClick={handleCloseModal}>
+                                Cerrar
+                            </Button>
+                        </Box>
+                    </Box>
+                </Modal>
+                {/*Modal para mostrar la confirmación de la cancelacion*/}
+                <Modal
+                    open={openSuccessCancel}
+                    onClose={() => setOpenSuccessCancel(false)}
+                    aria-labelledby="success-modal-title"
+                    aria-describedby="success-modal-description"
+                >
+                    {/* Contenido del modal de éxito */}
+                    <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
+                        <Typography variant="h6" component="h2" id="success-modal-title">
+                            ¡Turno Cancelado!
+                        </Typography>
+                        <Typography id="success-modal-description">
+                            El turno se ha cancelado exitosamente.
+                        </Typography>
+                        <Button variant="contained" onClick={() => setOpenSuccessCancel(false)}>
                             Cerrar
                         </Button>
                     </Box>
-                </Box>
-            </Modal>
-            {/*Modal para mostrar la confirmación de la cancelacion*/}
-            <Modal
-                open={openSuccessCancel}
-                onClose={() => setOpenSuccessCancel(false)}
-                aria-labelledby="success-modal-title"
-                aria-describedby="success-modal-description"
-            >
-                {/* Contenido del modal de éxito */}
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', p: 4 }}>
-                    <Typography variant="h6" component="h2" id="success-modal-title">
-                        ¡Turno Cancelado!
-                    </Typography>
-                    <Typography id="success-modal-description">
-                        El turno se ha cancelado exitosamente.
-                    </Typography>
-                    <Button variant="contained" onClick={() => setOpenSuccessCancel(false)}>
-                        Cerrar
-                    </Button>
-                </Box>
-            </Modal>
+                </Modal>
+            </Grid>
         </Grid>
     );
 }

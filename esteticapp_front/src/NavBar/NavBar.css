@@ -4,7 +4,7 @@
   display: flex;
   justify-content: start;
   align-items: center;
-  position: relative; /* Añadido para ajustar el z-index */
+  position: relative;
 }
 
 .menu-bars {
@@ -23,6 +23,7 @@
   top: 0;
   left: -100%;
   transition: 850ms;
+  z-index: 9999;
 }
 
 .nav-menu.active {

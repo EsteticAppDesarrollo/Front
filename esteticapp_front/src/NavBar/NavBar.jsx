@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <>
       <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar' style={{ zIndex: 1001, display: 'flex', alignItems: 'center' }}>
+        <div className='navbar' style={{display: 'flex', alignItems: 'center' }}>
           <Link to='#' className='menu-bars'>
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
