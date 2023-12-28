@@ -36,9 +36,9 @@ export default function SignUpUser() {
             phone: parseInt(phone),
             adress: adress,
             birthdate: new Date(birthdate),
-            userId:userId,
+            userId: userId,
         };
-        let userDTO ={
+        let userDTO = {
             user: User,
         }
         const requestOptions = {
@@ -82,112 +82,120 @@ export default function SignUpUser() {
     }, [])
 
     return (
-        
-        <Grid >
-            <Navbar />
-            <CssBaseline />
-            <Grid sx={{
-                backgroundImage: "url(/foto2.jpg)",
-                backgroundRepeat: 'no-repeat',
-                backgroundColor: (t) =>
-                    t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                height:'100vh'
-            }}>
-                <Container component="main" maxWidth='xs'>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: '#53b375' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        name="name"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        label="Nombre"
-                                        autoFocus
-                                    />
-
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                        required
-                                        fullWidth
-                                        id="lastName"
-                                        label="Apellido"
-                                        name="lastName"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        required
-                                        fullWidth
-                                        id="phone"
-                                        label="Telefono"
-                                        name="phone"
-                                        type="number"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>                               
-                                <Grid item xs={12} sm={12} sx={{ width: '100vh' }}>
-                                    <InputLabel htmlFor="birthdate">Fecha de Nacimiento</InputLabel>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                                        <DatePicker
-                                            dateFormat="dd/MM/yyyy"
-                                            value={birthdate ? dayjs(birthdate) : null}
-                                            onChange={(date) => {
-                                                const d = new Date(date).toLocaleDateString('fr-FR');
-                                                setBirthdate(d);
-                                            }}
+        <Grid>
+            <Navbar/>
+            <Grid container component="main">
+                <Grid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        backgroundImage: "url(/foto2.jpg)",
+                        backgroundRepeat: 'no-repeat',
+                        backgroundColor: (t) =>
+                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        height: '100vh',
+                    }}
+                >
+                    <Container component="main" maxWidth="xs">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Avatar sx={{bgcolor: '#53b375' }}>
+                                <LockOutlinedIcon />
+                            </Avatar>
+                            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            name="name"
+                                            required
+                                            fullWidth
+                                            id="name"
+                                            label="Nombre"
+                                            autoFocus
                                         />
-                                    </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            required
+                                            fullWidth
+                                            id="lastName"
+                                            label="Apellido"
+                                            name="lastName"
+                                            autoComplete="family-name"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={12}>
+                                        <TextField
+                                            value={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                            required
+                                            fullWidth
+                                            id="phone"
+                                            label="Telefono"
+                                            name="phone"
+                                            type="number"
+                                            autoComplete="family-name"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={12}>
+                                        <InputLabel htmlFor="birthdate">Fecha de Nacimiento</InputLabel>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                dateFormat="dd/MM/yyyy"
+                                                value={birthdate ? dayjs(birthdate) : null}
+                                                onChange={(date) => {
+                                                    const d = new Date(date).toLocaleDateString('fr-FR');
+                                                    setBirthdate(d);
+                                                }}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            value={emailAddress}
+                                            onChange={(e) => setEmailAddress(e.target.value)}
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email"
+                                            name="email"
+                                            autoComplete="email"
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                    value={emailAddress}
-                                    onChange={(e) => setEmailAddress(e.target.value)}
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email"
-                                        name="email"
-                                        autoComplete="email"
-                                    />
-                                </Grid>                                
-                            </Grid>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Guardar cambios
-                            </Button>
-                            <Alert severity="error" id='alertEmailDupicate' style={{ display: 'none' }}>El email ya se encuentra registrado</Alert>
-                            <Alert severity="error" id='alert500' style={{ display: 'none' }}>No pudo procesarse la creación de usuario, vuelva a intentarlo en unos minutos</Alert>
-                            <Alert severity="error" id='alertIncorrectPassword' style={{ display: 'none' }}>El Email y/o Contraseña son incorrectos</Alert>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2 }}
+                                >
+                                    Guardar cambios
+                                </Button>
+                                <Alert severity="error" id="alertEmailDupicate" style={{ display: 'none' }}>
+                                    El email ya se encuentra registrado
+                                </Alert>
+                                <Alert severity="error" id="alert500" style={{ display: 'none' }}>
+                                    No pudo procesarse la creación de usuario, vuelva a intentarlo en unos minutos
+                                </Alert>
+                                <Alert severity="error" id="alertIncorrectPassword" style={{ display: 'none' }}>
+                                    El Email y/o Contraseña son incorrectos
+                                </Alert>
+                            </Box>
                         </Box>
-                    </Box>
-                </Container>
+                    </Container>
+                </Grid>
             </Grid>
         </Grid>
     );

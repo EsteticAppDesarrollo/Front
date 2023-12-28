@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Paper, Box, Tabs, Tab,Container } from '@mui/material';
+import { Grid, Typography, Paper, Box, Tabs, Tab, Container } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../NavBarUser/NavBar';
 import Agenda from '../Agenda/Agenda';
@@ -92,29 +92,6 @@ export default function MedicPage() {
                 </Typography>
             ) : (
                 <Grid container spacing={2} sx={{ padding: 3 }}>
-                    <Grid item xs={12}>
-                        <Typography variant="h4" align="left">
-                            {medic.medic.medicalOfficeName}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <img
-                            src="https://imgs.search.brave.com/vYmDmX96nAineLn2FOtal5GsVroDHzAjwW3nBJCAdiA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/Zm90by1ncmF0aXMv/ZG9jdG9yLXBhY2ll/bnRlXzE0MjEtNjQu/anBnP3NpemU9NjI2/JmV4dD1qcGc"
-                            alt="Imagen"
-                            width="200"
-                            height="200"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Paper>
-                            <div id="map" style={mapStyles}></div>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <Typography variant="h6">
-                            {medic.medic.officeDescription}
-                        </Typography>
-                    </Grid>
                     <Container>
                         <Tabs
                             value={selectedTab}
@@ -123,13 +100,41 @@ export default function MedicPage() {
                             textColor="primary"
                             centered
                         >
-                            <Tab label="Imagenes" sx={tabLabelStyle}/>
-                            <Tab label="Tratamientos" sx={tabLabelStyle}/>
-                            <Tab label="Formas de pago" sx={tabLabelStyle}/>
-                            <Tab label="Turnos" sx={tabLabelStyle}/>
+                            <Tab label="Información" sx={tabLabelStyle} />
+                            <Tab label="Imagenes" sx={tabLabelStyle} />
+                            <Tab label="Tratamientos" sx={tabLabelStyle} />
+                            <Tab label="Formas de pago" sx={tabLabelStyle} />
+                            <Tab label="Turnos" sx={tabLabelStyle} />
                         </Tabs>
-                        {selectedTab === 3 && <Agenda idMedic={MedicId} medic={medic}/>}
+                        {selectedTab === 0 && <div><Grid item xs={12}>
+                            <Typography variant="h4" align="left">
+                                {medic.medic.medicalOfficeName}
+                            </Typography>
+                        </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <img
+                                    src="https://imgs.search.brave.com/vYmDmX96nAineLn2FOtal5GsVroDHzAjwW3nBJCAdiA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/Zm90by1ncmF0aXMv/ZG9jdG9yLXBhY2ll/bnRlXzE0MjEtNjQu/anBnP3NpemU9NjI2/JmV4dD1qcGc"
+                                    alt="Imagen"
+                                    width="200"
+                                    height="200"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper>
+                                    <div id="map" style={mapStyles}></div>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Typography variant="h6">
+                                    {medic.medic.officeDescription}
+                                </Typography>
+                            </Grid></div>}
+                        {selectedTab === 4 && <Agenda idMedic={MedicId} medic={medic} />}
                     </Container>
+
+
+
+
                 </Grid>
 
             )}
