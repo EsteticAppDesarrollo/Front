@@ -141,7 +141,6 @@ export default function SignUpUser() {
         <Grid>
             <Navbar />
             <Grid>
-                <CssBaseline />
                 <Grid sx={{
                     backgroundImage: "url(/FondoLargo.jpg)",
                     backgroundRepeat: 'no-repeat',
@@ -149,9 +148,10 @@ export default function SignUpUser() {
                         t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    height: '100vh'
+                    height: '100vh',
+                    
                 }}>
-                    <Container component="main" maxWidth='s' sx={{ width: '110vh' }}>
+                    <Container component="main" maxWidth="md" sx={{ width: '100%' }}>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -165,9 +165,9 @@ export default function SignUpUser() {
                             <Typography component="h1" variant="h5">
                                 Mi perfil
                             </Typography>
-                            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 , width: '100%'}}>
 
-                                <Grid item container spacing={2} sm={12} sx={{
+                                <Grid item container spacing={2} sx={{
                                     border: 1,
                                     borderColor: 'grey.500',
                                     borderRadius: '16px',
@@ -211,7 +211,7 @@ export default function SignUpUser() {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
-                                        <MapsAutocomplete />
+                                        <MapsAutocomplete/>
                                     </Grid>
 
                                 </Grid>
