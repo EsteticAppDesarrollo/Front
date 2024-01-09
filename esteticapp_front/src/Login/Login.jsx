@@ -63,14 +63,14 @@ export default function SignInSide() {
   };
 
 
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
-      setOpen(true);
-    };
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -85,12 +85,12 @@ export default function SignInSide() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh', width: '215vh' }}>
+      <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
           item
-          xs={false}
-          sm={4}
+          xs={12}
+          sm={5}
           md={7}
           sx={{
             backgroundImage: "url(/ImagenLogin.jpg)",
@@ -101,7 +101,7 @@ export default function SignInSide() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} maxWidth='xs' square>
+        <Grid item xs={12} sm={7} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
               my: 8,
@@ -164,7 +164,7 @@ export default function SignInSide() {
                 </Grid>
                 <Grid item>
                   <Link onClick={handleOpen} variant="body2">
-                    Registrarse     
+                    Registrarse
                   </Link>
 
                   <Modal
@@ -175,7 +175,7 @@ export default function SignInSide() {
                   >
                     <Box sx={{ ...style, width: 400 }}>
                       <h2 id="parent-modal-title">¿Cuenta de que queres crear perreque malvado ?</h2>
-                      <Button variant="contained" href="/NewMedic" sx={{mr:12}}>Medico</Button>
+                      <Button variant="contained" href="/NewMedic" sx={{ mr: 12 }}>Medico</Button>
                       <Button variant="contained" href="/NewUser">Paciente</Button>
                     </Box>
                   </Modal>

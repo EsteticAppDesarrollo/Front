@@ -57,137 +57,145 @@ export default function SignUpMedic() {
     };
 
     return (
-        <Grid>
-            <CssBaseline />
-            <Grid sx={{
-                backgroundImage: "url(/foto2.jpg)",
-                backgroundRepeat: 'no-repeat',
-                backgroundColor: (t) =>
-                    t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                height: '100vh'
-            }}>
-                <Container component="main" maxWidth='s' sx={{ width: '110vh' }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
+        <Grid container sx={{ height: '100vh' }}>
+        <CssBaseline />
+        <Grid
+          item
+          xs={12}
+          sx={{
+            backgroundImage: "url(/foto2.jpg)",
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: (t) =>
+              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Container component="main" maxWidth="sm" sx={{ width: '100%' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: '#53b375' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      fullWidth
+                      autoComplete="given-name"
+                      name="name"
+                      required
+                      id="name"
+                      label="Nombre"
+                      autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      fullWidth
+                      required
+                      id="lastName"
+                      label="Apellido"
+                      name="lastName"
+                      autoComplete="family-name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      fullWidth
+                      required
+                      id="tuition"
+                      label="Matrícula"
+                      name="tuition"
+                      autoComplete="family-name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="whatsapp"
+                      label="Teléfono"
+                      name="whatsapp"
+                      type="number"
+                      autoComplete="family-name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="instagram"
+                      label="Instagram"
+                      name="instagram"
+                      autoComplete="family-name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MapsAutocomplete />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => {
+                          const d = new Date(date).toLocaleDateString('fr-FR');
+                          setDate(d);
+                          console.log(d);
                         }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: '#53b375' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        autoComplete="given-name"
-                                        name="name"
-                                        required
-                                        id="name"
-                                        label="Nombre"
-                                        autoFocus
-                                    />
-
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        required
-                                        id="lastName"
-                                        label="Apellido"
-                                        name="lastName"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        required
-                                        id="tuition"
-                                        label="Matricula"
-                                        name="tuition"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="whatsapp"
-                                        label="Telefono"
-                                        name="whatsapp"
-                                        type="number"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="instagram"
-                                        label="Instagram"
-                                        name="instagram"
-                                        autoComplete="family-name"
-                                    />
-                                </Grid>
-
-                                <Grid item xs={12} sm={12}>
-                                    <MapsAutocomplete />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker
-                                            dateFormat="dd/MM/yyyy"
-                                            onChange={(date) => {
-                                                const d = new Date(date).toLocaleDateString('fr-FR');
-                                                setDate(d);
-                                                console.log(d)
-                                            }}
-                                        />
-                                    </LocalizationProvider>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email"
-                                        name="email"
-                                        autoComplete="email"
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Contraseña"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                    />
-                                </Grid>
-                            </Grid>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Crear cuenta
-                            </Button>
-                            <Alert severity="error" id='alertEmailDupicate' style={{ display: 'none' }}>El email ya se encuentra registrado</Alert>
-                            <Alert severity="error" id='alert500' style={{ display: 'none' }}>No pudo procesarse la creación de usuario</Alert>
-                        </Box>
-                    </Box>
-                </Container>
-            </Grid>
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    {/* Deja este espacio en blanco o coloca contenido adicional si es necesario */}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email"
+                      name="email"
+                      autoComplete="email"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      name="password"
+                      label="Contraseña"
+                      type="password"
+                      id="password"
+                      autoComplete="new-password"
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Crear cuenta
+                </Button>
+                <Alert severity="error" id='alertEmailDupicate' style={{ display: 'none' }}>El email ya se encuentra registrado</Alert>
+                <Alert severity="error" id='alert500' style={{ display: 'none' }}>No pudo procesarse la creación de usuario</Alert>
+              </Box>
+            </Box>
+          </Container>
         </Grid>
+      </Grid>
     );
+  
 }
