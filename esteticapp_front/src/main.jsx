@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Login from './Login/Login.jsx'
+import LoginMedic from './Login/LoginMedic.jsx'
+import LoginUser from './Login/LoginUser.jsx'
 import NewUser from './NewUser/NewUser'
 import NewMedic from './NewMedic/NewMedic'
 import UserPanel from './UserPanel/UserPanel'
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />
+  },
+  {
+    path: "/LoginMedic",
+    element: <LoginMedic />
+  },
+  {
+    path: "/LoginUser",
+    element: <LoginUser />
   },
   {
     path: "/NewUser",
